@@ -8,7 +8,10 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import PostList from './components/posts/PostList';
 import PostDetail from './components/posts/PostDetail';
+import CategoryList from './components/categories/CategoryList';
+import CategoryDetail from './components/categories/CategoryDetail';
 import Profile from './components/profile/Profile';
+import EditProfile from './components/profile/EditProfile';
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -25,7 +28,15 @@ function App() {
             path="/forum"
             element={
               <PrivateRoute isAuthenticated={isAuthenticated}>
-                <PostList />
+                <CategoryList />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/category/:slug"
+            element={
+              <PrivateRoute isAuthenticated={isAuthenticated}>
+                <CategoryDetail />
               </PrivateRoute>
             }
           />
@@ -42,6 +53,14 @@ function App() {
             element={
               <PrivateRoute isAuthenticated={isAuthenticated}>
                 <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile/edit"
+            element={
+              <PrivateRoute isAuthenticated={isAuthenticated}>
+                <EditProfile />
               </PrivateRoute>
             }
           />

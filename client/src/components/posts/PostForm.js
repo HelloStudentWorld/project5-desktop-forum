@@ -1,24 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPost, updatePost } from '../../features/posts/postsSlice';
+import { fetchCategories } from '../../features/categories/categoriesSlice';
 
 const PostForm = ({ post, onSuccess }) => {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
+    category_id: '',
   });
   const [error, setError] = useState('');
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.posts);
+  const { categories } = useSelector((state) => state.categories);
 
   useEffect(() => {
     if (post) {
       setFormData({
         title: post.title,
         content: post.content,
+        category_id: post.category_id || '',
       });
     }
   }, [post]);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   const handleChange = (e) => {
     setFormData({
@@ -33,6 +41,11 @@ const PostForm = ({ post, onSuccess }) => {
 
     if (!formData.title.trim() || !formData.content.trim()) {
       setError('Title and content are required');
+      return;
+    }
+
+    if (!formData.category_id) {
+      setError('Please select a category');
       return;
     }
 
@@ -72,6 +85,24 @@ const PostForm = ({ post, onSuccess }) => {
             placeholder="Enter post title"
             required
           />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="category">Category:</label>
+          <select
+            id="category"
+            name="category_id"
+            value={formData.category_id}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select a category</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="form-group">

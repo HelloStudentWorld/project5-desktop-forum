@@ -5,6 +5,9 @@ JAWSDB_URL: mysql://j9ardwoqf9ri28im:t9a5u7jghbfkxaxm@muowdopceqgxjn2b3.cbetxkdy
 # deployment information 
 heroku project name: project5-forum
 
+# to run the server
+cd backend && npm run dev
+cd client && npm start
 
 -------------------------------
 -------------------------------

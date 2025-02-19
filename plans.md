@@ -1,98 +1,190 @@
-# Implementation Plan for Forum Application
+# Profile Photo Editing Fix Plan
 
-## Phase 1: Backend Setup ✅
+## Current Issues
 
-### 1.1 Initial Setup ✅
-- [x] Create backend directory structure
-- [x] Install required dependencies
-- [x] Configure environment variables with JAWSDB_URL
-- [x] Set up basic Express server
+### Frontend Issues
+1. Base64 Image Data Handling
+   - Problem: EditProfile component incorrectly splits base64 image data
+   - Current: `profile_picture: formData.profile_picture.split(',')[1]`
+   - This assumes the data URL prefix is always present, which may not be true
 
-### 1.2 Database & Models ✅
-- [x] Configure Sequelize with JAWSDB connection
-- [x] Implement User model
-- [x] Implement Post model
-- [x] Implement Comment model
-- [x] Set up model associations
+2. Image Validation
+   - No validation of cropped image output in ImageCropper
+   - No visual feedback during image processing
+   - Incomplete error handling for failed uploads
 
-### 1.3 Authentication ✅
-- [x] Implement JWT middleware
-- [x] Create authentication routes (register/login)
-- [x] Set up password hashing with bcrypt
+3. User Experience
+   - No loading state during image upload
+   - No preview of the cropped image before saving
+   - No feedback on upload progress
 
-### 1.4 API Routes ✅
-- [x] Implement user routes
-- [x] Implement post routes
-- [x] Implement comment routes
-- [x] Add proper error handling
+### Backend Issues
+1. File Management
+   - No cleanup of old profile pictures when new ones are uploaded
+   - Potential disk space issues over time
+   - No validation of upload directory permissions
 
-## Phase 2: Frontend Setup ✅
+2. Image Processing
+   - No server-side file size validation
+   - No validation of image dimensions
+   - No handling of corrupt image data
 
-### 2.1 Initial Setup ✅
-- [x] Create React application
-- [x] Set up Redux store
-- [x] Configure routing with React Router
-- [x] Set up Axios for API calls
+3. Error Handling
+   - Basic error messages that don't provide specific details
+   - No proper cleanup on failed uploads
+   - No logging of image processing errors
 
-### 2.2 Components ✅
-- [x] Create authentication components (Login/Register)
-- [x] Create navigation component
-- [x] Implement post components (List/Create/Edit)
-- [x] Create comment components
-- [x] Build user profile component
+## Solution Plan
 
-### 2.3 State Management ✅
-- [x] Implement authentication state
-- [x] Set up posts state management
-- [x] Handle comments state
-- [x] Add loading states and error handling
+### Frontend Changes
 
-## Phase 3: Integration & Deployment
+1. EditProfile.js Updates
+   ```javascript
+   // Modify image submission
+   const handleSubmit = async (e) => {
+     e.preventDefault();
+     setError(null);
+     setLoading(true);
+     
+     try {
+       const imageData = formData.profile_picture.includes('data:image') 
+         ? formData.profile_picture.split(',')[1]
+         : formData.profile_picture;
+         
+       await api.put(`/users/${currentUser.id}`, { 
+         ...formData, 
+         profile_picture: imageData 
+       });
+       navigate(`/profile/${currentUser.id}`);
+     } catch (err) {
+       setError(err.response?.data?.message || 'Error updating profile');
+     } finally {
+       setLoading(false);
+     }
+   };
+   ```
 
-### 3.1 Integration
-- [x] Connect frontend with backend API
-- [x] Add proper error handling
-- [x] Add loading states
-- [ ] Test all features end-to-end
+2. ImageCropper.js Improvements
+   - Add loading state during crop processing
+   - Validate cropped image dimensions
+   - Add preview of final cropped image
+   - Improve error messaging
 
-### 3.2 Deployment
-- [ ] Configure Heroku environment variables
-- [ ] Set up build process
-- [ ] Deploy backend
-- [ ] Deploy frontend
-- [ ] Verify deployment
+### Backend Changes
 
-## Current Status
-- Backend API is fully implemented and tested ✅
-- Database connection is working with JAWSDB ✅
-- Authentication system is working ✅
-- API endpoints for users, posts, and comments are working ✅
-- Frontend components are implemented ✅
-- Redux state management is set up ✅
-- API integration is complete ✅
+1. Image Processor Updates
+   ```javascript
+   const processProfileImage = async (base64Data, userId) => {
+     try {
+       // Validate input
+       if (!base64Data) {
+         throw new Error('No image data provided');
+       }
 
-## Next Steps
-1. Start both backend and frontend servers
-2. Test all features end-to-end
-3. Deploy the application to Heroku
-4. Verify the deployment
+       // Clean up old profile picture
+       const user = await User.findByPk(userId);
+       if (user.profile_picture) {
+         const oldPath = path.join(__dirname, '..', user.profile_picture);
+         await fs.unlink(oldPath).catch(() => {});
+       }
 
-## Testing Results
-1. User Registration: ✅
-   - Successfully created test user
-   - Received JWT token
-2. Post Creation: ✅
-   - Created test post with authentication
-   - Post saved with correct user association
-3. Post Retrieval: ✅
-   - Successfully retrieved posts with author information
-   - Data structure is correct
+       // Process new image
+       const base64Image = base64Data.replace(/^data:image\/\w+;base64,/, '');
+       const imageBuffer = Buffer.from(base64Image, 'base64');
 
-## Notes
-- Backend is using JAWSDB for both development and production
-- JWT authentication is working correctly
-- API endpoints follow RESTful conventions
-- Error handling is implemented
-- Database models and associations are working as expected
-- Frontend components are styled and responsive
-- Redux state management is handling data flow correctly
+       // Validate file size (5MB limit)
+       if (imageBuffer.length > 5 * 1024 * 1024) {
+         throw new Error('Image file too large');
+       }
+
+       // Process image
+       const processedImage = await sharp(imageBuffer)
+         .resize(400, 400, {
+           fit: 'cover',
+           position: 'center'
+         })
+         .jpeg({ quality: 90 })
+         .toBuffer();
+
+       // Save with error handling
+       const filename = `profile_${userId}_${Date.now()}.jpg`;
+       const uploadDir = path.join(__dirname, '../uploads/profiles');
+       const filePath = path.join(uploadDir, filename);
+
+       await fs.mkdir(uploadDir, { recursive: true });
+       await fs.writeFile(filePath, processedImage);
+
+       return `/uploads/profiles/${filename}`;
+     } catch (error) {
+       console.error('Error processing image:', error);
+       throw new Error(`Failed to process image: ${error.message}`);
+     }
+   };
+   ```
+
+2. User Routes Enhancement
+   ```javascript
+   router.put('/:id', auth, async (req, res) => {
+     try {
+       const { bio, profile_picture: base64Image } = req.body;
+       const user = await User.findByPk(req.params.id);
+       
+       if (!user) {
+         return res.status(404).json({ message: 'User not found' });
+       }
+
+       if (user.id !== req.user.id) {
+         return res.status(403).json({ message: 'Not authorized' });
+       }
+
+       user.bio = bio || user.bio;
+       
+       if (base64Image) {
+         try {
+           const imagePath = await processProfileImage(base64Image, user.id);
+           user.profile_picture = imagePath;
+         } catch (imageError) {
+           return res.status(400).json({ 
+             message: 'Error processing image', 
+             error: imageError.message 
+           });
+         }
+       }
+       
+       await user.save();
+       res.json(user);
+     } catch (err) {
+       res.status(500).json({ 
+         message: 'Error updating profile', 
+         error: err.message 
+       });
+     }
+   });
+   ```
+
+## Implementation Steps
+
+1. Backend Updates
+   - [ ] Update imageProcessor.js with new validation and cleanup
+   - [ ] Modify users route with enhanced error handling
+   - [ ] Add logging for image processing errors
+   - [ ] Test upload directory permissions
+
+2. Frontend Updates
+   - [ ] Fix base64 image handling in EditProfile
+   - [ ] Add loading states and progress indicators
+   - [ ] Improve error messaging and user feedback
+   - [ ] Add image preview functionality
+
+3. Testing
+   - [ ] Test with various image sizes and formats
+   - [ ] Verify old image cleanup
+   - [ ] Test error scenarios
+   - [ ] Validate user experience improvements
+
+## Success Criteria
+- Profile pictures can be successfully uploaded and cropped
+- Old profile pictures are cleaned up
+- Users receive clear feedback during the process
+- Error messages are specific and helpful
+- Image processing is reliable and efficient

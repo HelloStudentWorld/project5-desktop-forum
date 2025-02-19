@@ -1,10 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
-  headers: {
-    'Content-Type': 'application/json'
-  }
+  baseURL: 'http://localhost:5000/api',
 });
 
 // Add token to requests if available
@@ -13,6 +10,12 @@ api.interceptors.request.use(
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    // Set Content-Type based on request data
+    if (typeof config.data === 'object' && !(config.data instanceof FormData)) {
+      config.headers['Content-Type'] = 'application/json';
+      config.transformRequest = [data => JSON.stringify(data)];
     }
     return config;
   },
