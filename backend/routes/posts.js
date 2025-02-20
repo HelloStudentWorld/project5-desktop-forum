@@ -39,13 +39,40 @@ router.get('/:id', async (req, res) => {
 // Create new post
 router.post('/', auth, async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, category_id, isIntroduction } = req.body;
+    
+    // Validate required fields
+    if (!title || !content || !category_id) {
+      return res.status(400).json({ 
+        message: 'Missing required fields',
+        details: {
+          title: !title ? 'Title is required' : null,
+          content: !content ? 'Content is required' : null,
+          category_id: !category_id ? 'Category is required' : null
+        }
+      });
+    }
+
+    // Skip question mark validation for introduction posts
+    if (!isIntroduction && !title.trim().endsWith('?')) {
+      return res.status(400).json({ 
+        message: 'Title must end with a question mark'
+      });
+    }
+
     const newPost = await Post.create({
       title,
       content,
       user_id: req.user.id,
+      category_id
     });
-    res.status(201).json(newPost);
+
+    // Fetch the created post with author details
+    const postWithDetails = await Post.findByPk(newPost.id, {
+      include: [{ model: User, as: 'author', attributes: ['id', 'username'] }]
+    });
+
+    res.status(201).json(postWithDetails);
   } catch (err) {
     res.status(400).json({ message: 'Error creating post', error: err.message });
   }
@@ -54,13 +81,20 @@ router.post('/', auth, async (req, res) => {
 // Update a post
 router.put('/:id', auth, async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, isIntroduction } = req.body;
     const post = await Post.findByPk(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
 
     // Check ownership
     if (post.user_id !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    // Validate title if it's being updated
+    if (title && !isIntroduction && !title.trim().endsWith('?')) {
+      return res.status(400).json({ 
+        message: 'Title must end with a question mark'
+      });
     }
 
     post.title = title || post.title;

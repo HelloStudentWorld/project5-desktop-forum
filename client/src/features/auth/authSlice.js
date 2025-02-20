@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../services/api';
 
 // Async thunks
 export const login = createAsyncThunk(
   'auth/login',
   async (credentials) => {
-    const response = await axios.post('/api/auth/login', credentials);
+    const response = await api.post('/auth/login', credentials);
     localStorage.setItem('token', response.data.token);
     return response.data;
   }
@@ -14,9 +14,21 @@ export const login = createAsyncThunk(
 export const register = createAsyncThunk(
   'auth/register',
   async (userData) => {
-    const response = await axios.post('/api/auth/register', userData);
+    const response = await api.post('/auth/register', userData);
     localStorage.setItem('token', response.data.token);
     return response.data;
+  }
+);
+
+export const loadUser = createAsyncThunk(
+  'auth/loadUser',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get('/auth/me');
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to load user');
+    }
   }
 );
 
@@ -75,6 +87,23 @@ const authSlice = createSlice({
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      // Load user cases
+      .addCase(loadUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loadUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload;
+      })
+      .addCase(loadUser.rejected, (state) => {
+        localStorage.removeItem('token');
+        state.token = null;
+        state.isAuthenticated = false;
+        state.user = null;
+        state.loading = false;
       });
   },
 });

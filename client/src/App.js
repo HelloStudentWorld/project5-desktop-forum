@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { loadUser } from './features/auth/authSlice';
 import Navbar from './components/layout/Navbar';
 import PrivateRoute from './components/layout/PrivateRoute';
 import Home from './components/pages/Home';
@@ -14,7 +15,13 @@ import Profile from './components/profile/Profile';
 import EditProfile from './components/profile/EditProfile';
 
 function App() {
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const { isAuthenticated, token } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (token)
+      dispatch(loadUser());
+  }, [dispatch, token]);
 
   return (
     <div className="App">

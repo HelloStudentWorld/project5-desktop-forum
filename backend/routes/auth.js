@@ -60,4 +60,16 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Get authenticated user
+router.get('/me', auth, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id, {
+      attributes: ['id', 'username', 'email']
+    });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user data', error: error.message });
+  }
+});
+
 module.exports = router;

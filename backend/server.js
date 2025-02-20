@@ -38,10 +38,18 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something broke!', error: err.message });
 });
 
+// Serve static files from the React app in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
+}
+
 // Listen on Heroku's port or fallback
 const PORT = process.env.PORT || 5000;
 sequelize
-  .sync({ force: true })
+  .sync({ force: false }) // Changed from true to false to preserve data
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);

@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../services/api';
 
 // Async thunks
 export const fetchPosts = createAsyncThunk(
   'posts/fetchPosts',
   async () => {
-    const response = await axios.get('/api/posts');
+    const response = await api.get('/posts');
     return response.data;
   }
 );
@@ -13,40 +13,31 @@ export const fetchPosts = createAsyncThunk(
 export const fetchPostById = createAsyncThunk(
   'posts/fetchPostById',
   async (postId) => {
-    const response = await axios.get(`/api/posts/${postId}`);
+    const response = await api.get(`/posts/${postId}`);
     return response.data;
   }
 );
 
 export const createPost = createAsyncThunk(
   'posts/createPost',
-  async (postData, { getState }) => {
-    const { auth: { token } } = getState();
-    const response = await axios.post('/api/posts', postData, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+  async (postData) => {
+    const response = await api.post('/posts', postData);
     return response.data;
   }
 );
 
 export const updatePost = createAsyncThunk(
   'posts/updatePost',
-  async ({ postId, postData }, { getState }) => {
-    const { auth: { token } } = getState();
-    const response = await axios.put(`/api/posts/${postId}`, postData, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+  async ({ postId, postData }) => {
+    const response = await api.put(`/posts/${postId}`, postData);
     return response.data;
   }
 );
 
 export const deletePost = createAsyncThunk(
   'posts/deletePost',
-  async (postId, { getState }) => {
-    const { auth: { token } } = getState();
-    await axios.delete(`/api/posts/${postId}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+  async (postId) => {
+    await api.delete(`/posts/${postId}`);
     return postId;
   }
 );

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Category, Post } = require('../models');
+const { Category, Post, User } = require('../models');
 const auth = require('../middleware/auth');
 
 // Get all categories
@@ -47,6 +47,7 @@ router.get('/:slug', async (req, res) => {
             },
           ],
           order: [['created_at', 'DESC']],
+          separate: true
         },
       ],
     });

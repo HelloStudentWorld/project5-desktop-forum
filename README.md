@@ -9,6 +9,15 @@ heroku project name: project5-forum
 cd backend && npm run dev
 cd client && npm start
 
+# test user credentials
+
+Click on the "Register" link
+Fill out the registration form with:
+Username: testuser
+Email: test@example.com
+Password: password123
+
+
 -------------------------------
 -------------------------------
 Below is a **complete, end-to-end plan** for a 3‑tier forum application (MySQL, Node/Express, React) that you can paste in **steps** into a `plans.md` file or feed incrementally into an LLM. Each **step** is designed to be relatively compact to help with token efficiency, while still providing all necessary details and code.
