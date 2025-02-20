@@ -17,6 +17,11 @@ Username: testuser
 Email: test@example.com
 Password: password123
 
+# heroku updates
+git add .
+git commit -m "INSERT_COMMIT_TITLE_HERE"
+git push heroku main
+
 
 -------------------------------
 -------------------------------
