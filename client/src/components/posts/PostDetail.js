@@ -41,6 +41,10 @@ const PostDetail = () => {
     dispatch(fetchPostById(id));
   };
 
+  const handleCommentAdded = () => {
+    dispatch(fetchPostById(id));
+  };
+
   if (loading) {
     return <div className="loading">Loading post...</div>;
   }
@@ -97,7 +101,7 @@ const PostDetail = () => {
 
           <div className="comments-section">
             <h3>Comments</h3>
-            <CommentForm postId={id} />
+            <CommentForm postId={id} onCommentAdded={handleCommentAdded} />
             <CommentList comments={post.comments} postId={id} />
           </div>
         </>
