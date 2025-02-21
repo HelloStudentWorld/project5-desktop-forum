@@ -13,12 +13,18 @@ const userRoutes = require('./routes/users');
 const categoryRoutes = require('./routes/categories');
 
 const app = express();
-app.use(cors({
-  origin: 'http://localhost:3000',
+
+// Configure CORS based on environment
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? 'https://project5-forum-c7b26e408ef3.herokuapp.com'
+    : 'http://localhost:3000',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
-}));
+};
+app.use(cors(corsOptions));
+
 app.use(bodyParser.json({ limit: '10mb' })); // Increased limit for base64 images
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -48,13 +54,23 @@ if (process.env.NODE_ENV === 'production') {
 
 // Listen on Heroku's port or fallback
 const PORT = process.env.PORT || 5000;
-sequelize
-  .sync({ force: false }) // Changed from true to false to preserve data
-  .then(() => {
+
+// Database connection and server startup
+const startServer = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Database connection established successfully.');
+    
+    await sequelize.sync({ force: false });
+    console.log('Database synchronized.');
+    
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
-  })
-  .catch((err) => {
-    console.error('Unable to connect to the database:', err);
-  });
+  } catch (error) {
+    console.error('Unable to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
