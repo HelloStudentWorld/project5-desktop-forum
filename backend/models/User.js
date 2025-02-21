@@ -37,8 +37,13 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   // Compare password with stored hash
-  User.prototype.validPassword = function (password) {
-    return bcrypt.compare(password, this.password_hash);
+  User.prototype.validPassword = async function (password) {
+    try {
+      return await bcrypt.compare(password, this.password_hash);
+    } catch (error) {
+      console.error('Password comparison error:', error);
+      throw new Error('Error validating password');
+    }
   };
 
   // Hash password before creating user

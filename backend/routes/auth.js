@@ -38,6 +38,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('Login attempt for email:', email);
     const user = await User.findOne({ where: { email } });
     if (!user) return res.status(404).json({ message: 'User not found' });
 
@@ -57,6 +58,7 @@ router.post('/login', async (req, res) => {
       user: { id: user.id, username: user.username, email: user.email },
     });
   } catch (error) {
+    console.error('Login error details:', error);
     res.status(500).json({ message: 'Login failed', error: error.message });
   }
 });
