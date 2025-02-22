@@ -65,7 +65,7 @@ const PostDetail = () => {
   return (
     <div className="post-detail">
       {isEditing ? (
-        <PostForm post={post} onSuccess={handleEditSuccess} />
+        <PostForm post={post} onSuccess={handleEditSuccess} initialCategory={post.category_id} />
       ) : (
         <>
           <div className="post-header">

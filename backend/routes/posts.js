@@ -81,7 +81,7 @@ router.post('/', auth, async (req, res) => {
 // Update a post
 router.put('/:id', auth, async (req, res) => {
   try {
-    const { title, content, isIntroduction } = req.body;
+    const { title, content, category_id, isIntroduction } = req.body;
     const post = await Post.findByPk(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
 
@@ -99,8 +99,21 @@ router.put('/:id', auth, async (req, res) => {
 
     post.title = title || post.title;
     post.content = content || post.content;
+    if (category_id) post.category_id = category_id;
     await post.save();
-    res.json(post);
+
+    // Fetch and return the updated post with author details
+    const updatedPost = await Post.findByPk(post.id, {
+      include: [
+        { model: User, as: 'author', attributes: ['id', 'username'] },
+        {
+          model: Comment,
+          as: 'comments',
+          include: [{ model: User, as: 'author', attributes: ['id', 'username'] }],
+        },
+      ],
+    });
+    res.json(updatedPost);
   } catch (err) {
     res.status(400).json({ message: 'Error updating post', error: err.message });
   }
