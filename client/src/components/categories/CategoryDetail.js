@@ -77,7 +77,7 @@ const CategoryDetail = () => {
           <>
             <h2>Questions in {currentCategory.name}</h2>
             {currentCategory.posts && currentCategory.posts.length > 0 ? (
-              <PostList posts={currentCategory.posts} />
+              <PostList posts={currentCategory.posts} hideCreateButton={true} />
             ) : (
               <p>No questions in this category yet. Be the first to ask!</p>
             )}

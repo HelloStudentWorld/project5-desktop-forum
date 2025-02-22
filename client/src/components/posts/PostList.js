@@ -4,7 +4,7 @@ import { fetchPosts } from '../../features/posts/postsSlice';
 import PostCard from './PostCard';
 import PostForm from './PostForm';
 
-const PostList = () => {
+const PostList = ({ posts: propPosts, hideCreateButton = false }) => {
   const dispatch = useDispatch();
   const { list: posts, loading, error } = useSelector((state) => state.posts);
   const [showPostForm, setShowPostForm] = useState(false);
@@ -12,6 +12,8 @@ const PostList = () => {
   useEffect(() => {
     dispatch(fetchPosts());
   }, [dispatch]);
+  
+  const displayPosts = propPosts || posts;
 
   if (loading) {
     return <div className="loading">Loading posts...</div>;
@@ -25,12 +27,14 @@ const PostList = () => {
     <div className="posts-container">
       <div className="posts-header">
         <h2>Forum Posts</h2>
-        <button
-          className="create-post-btn"
-          onClick={() => setShowPostForm(!showPostForm)}
-        >
-          {showPostForm ? 'Cancel' : 'Create New Post'}
-        </button>
+        {!hideCreateButton && (
+          <button
+            className="create-post-btn"
+            onClick={() => setShowPostForm(!showPostForm)}
+          >
+            {showPostForm ? 'Cancel' : 'Create New Post'}
+          </button>
+        )}
       </div>
 
       {showPostForm && (
@@ -43,10 +47,10 @@ const PostList = () => {
       )}
 
       <div className="posts-list">
-        {posts.length === 0 ? (
+        {displayPosts.length === 0 ? (
           <p>No posts yet. Be the first to create one!</p>
         ) : (
-          posts.map((post) => <PostCard key={post.id} post={post} />)
+          displayPosts.map((post) => <PostCard key={post.id} post={post} />)
         )}
       </div>
     </div>
