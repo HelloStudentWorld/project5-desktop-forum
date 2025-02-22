@@ -41,16 +41,6 @@ const categories = [
     slug: 'hardware-infrastructure'
   },
   {
-    name: 'Data Management & Labeling',
-    description: 'For questions on data collection, annotation pipelines, dataset organization, and training data curation for autonomous driving models.',
-    slug: 'data-management-labeling'
-  },
-  {
-    name: 'Simulation & Testing',
-    description: 'For questions about simulation tools, synthetic data generation, test scenarios, and bridging the gap between simulated and real-world performance.',
-    slug: 'simulation-testing'
-  },
-  {
     name: 'General Q&A on NVIDIA Autonomous Tech',
     description: 'Catch-all category for any AV or NVIDIA DRIVE-related question not covered above.',
     slug: 'general-nvidia-av-qa'
