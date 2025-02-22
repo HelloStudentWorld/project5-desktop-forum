@@ -1,6 +1,14 @@
 require('dotenv').config();
 const { sequelize, Category } = require('../models');
 
+const oldSlugs = [
+  'general-discussion',
+  'tech-talk',
+  'help-support',
+  'news-updates',
+  'introductions'
+];
+
 const categories = [
   {
     name: 'Perception & Sensor Fusion',
@@ -54,7 +62,17 @@ async function seedCategories() {
     // Sync database
     await sequelize.sync();
 
-    // Create categories
+    // Delete old categories
+    console.log('Removing old categories...');
+    await Category.destroy({
+      where: {
+        slug: oldSlugs
+      }
+    });
+    console.log('Old categories removed successfully!');
+
+    // Create new categories
+    console.log('Creating new categories...');
     for (const category of categories) {
       await Category.findOrCreate({
         where: { slug: category.slug },
