@@ -26,6 +26,89 @@ git push heroku main
 21c8129 fix: auto-refresh comments after posting new comment
 
 
+# categories
+--------
+Perception & Sensor Fusion
+
+Description:
+For questions related to camera, LiDAR, radar integration, sensor calibration, object detection, and multi-sensor fusion on the NVIDIA platform.
+Example Threads:
+“How do I calibrate my LiDAR and camera for accurate 3D object detection?”
+“Why does my sensor fusion pipeline show misaligned bounding boxes?”
+
+--------
+Localization & Mapping
+
+Description:
+For questions about GPS integration, SLAM (Simultaneous Localization and Mapping), HD maps, and related localization approaches.
+Example Threads:
+“Where can I find HD maps compatible with NVIDIA DRIVE software?”
+“How do I set up a SLAM algorithm for real-time localization on NVIDIA hardware?”
+
+--------
+Path Planning & Control
+
+Description:
+For questions around motion planning algorithms, trajectory generation, and low-level vehicle control (steering, braking, throttle).
+Example Threads:
+“Which path-planning algorithm should I use for dense urban environments?”
+“Why is my trajectory controller producing jerky movements at low speeds?”
+
+--------
+Behavior Prediction & Decision Making
+
+Description:
+For questions about predicting other vehicles/pedestrians, implementing decision-making logic (rule-based or AI-driven), and handling complex traffic scenarios.
+Example Threads:
+“How do I incorporate traffic light recognition into my decision-making?”
+“Is it feasible to apply reinforcement learning for pedestrian behavior prediction?”
+
+--------
+Safety & Validation
+
+Description:
+For questions regarding system safety, validation strategies, test protocols, and standards compliance (e.g., ISO 26262).
+Example Threads:
+“What are best practices for validating autonomous systems on public roads?”
+“How do I handle functional safety requirements for NVIDIA-based AV platforms?”
+
+--------
+Hardware & Infrastructure
+
+Description:
+For questions about hardware integration, computing modules (e.g., NVIDIA DRIVE AGX), wiring harnesses, power systems, and on-vehicle setups.
+Example Threads:
+“Why is my NVIDIA DRIVE AGX board overheating under heavy load?”
+“How do I connect multiple LiDAR units to a single compute module?”
+
+--------
+Data Management & Labeling
+
+Description:
+For questions on data collection, annotation pipelines, dataset organization, and training data curation for autonomous driving models.
+Example Threads:
+“Where can I find large labeled datasets for autonomous driving training?”
+“What is the best way to label camera images for multi-class detection?”
+
+--------
+Simulation & Testing
+
+Description:
+For questions about simulation tools, synthetic data generation, test scenarios, and bridging the gap between simulated and real-world performance.
+Example Threads:
+“Which simulation platform integrates best with NVIDIA DRIVE software?”
+“How do I reconcile differences between simulation results and real-world tests?”
+
+--------
+General Q&A on NVIDIA Autonomous Tech
+
+Description:
+Catch-all category for any AV or NVIDIA DRIVE-related question not covered above.
+Example Threads:
+“Why is my GPU utilization so high during real-time inference?”
+“How do I become certified in NVIDIA autonomous driving technologies?”
+
+
 -------------------------------
 -------------------------------
 Below is a **complete, end-to-end plan** for a 3‑tier forum application (MySQL, Node/Express, React) that you can paste in **steps** into a `plans.md` file or feed incrementally into an LLM. Each **step** is designed to be relatively compact to help with token efficiency, while still providing all necessary details and code.

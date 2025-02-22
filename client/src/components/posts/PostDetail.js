@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import {
   fetchPostById,
   deletePost,
@@ -9,6 +11,7 @@ import {
 import PostForm from './PostForm';
 import CommentList from '../comments/CommentList';
 import CommentForm from '../comments/CommentForm';
+import './Markdown.css';
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -78,8 +81,28 @@ const PostDetail = () => {
             </div>
           </div>
 
-          <div className="post-content">
-            <p>{post.content}</p>
+          <div className="post-content markdown-content">
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]}
+              components={{
+                code: ({node, inline, className, children, ...props}) => {
+                  const match = /language-(\w+)/.exec(className || '');
+                  return !inline && match ? (
+                    <pre className={`language-${match[1]}`}>
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    </pre>
+                  ) : (
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  );
+                }
+              }}
+            >
+              {post.content}
+            </ReactMarkdown>
           </div>
 
           {isAuthor && (

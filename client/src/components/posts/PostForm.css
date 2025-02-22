@@ -1,0 +1,80 @@
+.post-form .content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.post-form .content-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.post-form .preview-toggle,
+.post-form .help-toggle {
+  padding: 4px 12px;
+  border: 1px solid #d0d7de;
+  background: #f6f8fa;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #24292f;
+}
+
+.post-form .preview-toggle:hover,
+.post-form .help-toggle:hover {
+  background: #f3f4f6;
+}
+
+.post-form .preview-toggle.active,
+.post-form .help-toggle.active {
+  background: #0969da;
+  color: white;
+  border-color: #0969da;
+}
+
+.post-form .content-preview {
+  min-height: 200px;
+  padding: 12px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.post-form .markdown-help {
+  margin: 8px 0;
+  padding: 16px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: #f8f9fa;
+  font-size: 14px;
+}
+
+.post-form textarea {
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+  line-height: 1.5;
+  padding: 8px 12px;
+}
+
+/* Ensure preview maintains same dimensions as textarea */
+.post-form .content-preview {
+  min-height: 250px; /* Matches 10 rows of textarea */
+  overflow-y: auto;
+}
+
+/* Style placeholder text in preview when empty */
+.post-form .content-preview em {
+  color: #6e7781;
+}
+
+/* Add some spacing between form elements */
+.post-form .form-group {
+  margin-bottom: 20px;
+}
+
+/* Make sure markdown content in preview doesn't overflow */
+.post-form .markdown-content {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}

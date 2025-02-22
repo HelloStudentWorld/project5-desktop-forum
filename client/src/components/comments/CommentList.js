@@ -1,6 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import '../posts/Markdown.css';
 
 const CommentList = ({ comments = [] }) => {
   const { user } = useSelector((state) => state.auth);
@@ -32,8 +35,31 @@ const CommentList = ({ comments = [] }) => {
               {formatDate(comment.created_at)}
             </span>
           </div>
-          <div className="comment-content">
-            <p>{comment.content}</p>
+          <div className="comment-content markdown-content">
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]}
+              components={{
+                // Customize code block rendering
+                code: ({node, inline, className, children, ...props}) => {
+                  const match = /language-(\w+)/.exec(className || '');
+                  return !inline && match ? (
+                    <pre className={`language-${match[1]}`}>
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    </pre>
+                  ) : (
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  );
+                },
+                // Make sure paragraphs in comments have appropriate spacing
+                p: ({children}) => <p style={{margin: '0.5em 0'}}>{children}</p>
+              }}
+            >
+              {comment.content}
+            </ReactMarkdown>
           </div>
           {user?.id === comment.user_id && (
             <div className="comment-actions">

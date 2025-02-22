@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { createPost, updatePost } from '../../features/posts/postsSlice';
 import { fetchCategories } from '../../features/categories/categoriesSlice';
+import './Markdown.css';
+import './PostForm.css';
 
 const PostForm = ({ post, onSuccess, initialCategory }) => {
   const [formData, setFormData] = useState({
@@ -10,9 +14,38 @@ const PostForm = ({ post, onSuccess, initialCategory }) => {
     category_id: initialCategory || '',
   });
   const [errors, setErrors] = useState({});
+  const [showPreview, setShowPreview] = useState(false);
+  const [showMarkdownHelp, setShowMarkdownHelp] = useState(false);
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.posts);
   const { categories } = useSelector((state) => state.categories);
+
+  const markdownGuide = `
+# Markdown Guide
+
+## Basic Syntax
+- **Bold text** using \`**text**\`
+- *Italic text* using \`*text*\`
+- [Links](url) using \`[text](url)\`
+- Lists using \`- \` or \`1. \`
+- Headers using \`# \`, \`## \`, etc.
+
+## Code
+\`\`\`javascript
+// Code blocks using three backticks
+function example() {
+  return 'Hello World';
+}
+\`\`\`
+
+## Tables
+| Header | Header |
+|--------|--------|
+| Cell   | Cell   |
+
+## Quotes
+> Blockquotes using \`> \`
+`;
 
   useEffect(() => {
     if (post) {
@@ -157,18 +190,60 @@ const PostForm = ({ post, onSuccess, initialCategory }) => {
         )}
 
         <div className="form-group">
-          <label htmlFor="content">Content:</label>
-          <textarea
-            id="content"
-            name="content"
-            value={formData.content}
-            onChange={handleChange}
-            placeholder={isIntroductionCategory
-              ? "Provide details about your introduction"
-              : "Provide details about your question"}
-            rows="6"
-            className={errors.content ? 'error' : ''}
-          />
+          <div className="content-header">
+            <label htmlFor="content">Content:</label>
+            <div className="content-actions">
+              <button 
+                type="button" 
+                className={`preview-toggle ${showPreview ? 'active' : ''}`}
+                onClick={() => setShowPreview(!showPreview)}
+              >
+                {showPreview ? 'Edit' : 'Preview'}
+              </button>
+              <button
+                type="button"
+                className={`help-toggle ${showMarkdownHelp ? 'active' : ''}`}
+                onClick={() => setShowMarkdownHelp(!showMarkdownHelp)}
+              >
+                Markdown Help
+              </button>
+            </div>
+          </div>
+
+          {showMarkdownHelp && (
+            <div className="markdown-help markdown-content">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {markdownGuide}
+              </ReactMarkdown>
+            </div>
+          )}
+
+          {showPreview ? (
+            <div className="content-preview markdown-content">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {formData.content || '*No content yet*'}
+              </ReactMarkdown>
+            </div>
+          ) : (
+            <textarea
+              id="content"
+              name="content"
+              value={formData.content}
+              onChange={handleChange}
+              placeholder={`${isIntroductionCategory
+                ? "Provide details about your introduction"
+                : "Provide details about your question"}
+
+You can use Markdown to format your text:
+**bold text**, *italic text*, [links](url)
+- bullet points
+1. numbered lists
+
+For more formatting options, click 'Markdown Help' above.`}
+              rows="10"
+              className={errors.content ? 'error' : ''}
+            />
+          )}
           {errors.content && (
             <div className="error-message">{errors.content}</div>
           )}
