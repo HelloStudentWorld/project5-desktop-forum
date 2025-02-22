@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import './Categories.css';
 import { fetchCategoryPosts } from '../../features/categories/categoriesSlice';
 import PostList from '../posts/PostList';
 import PostForm from '../posts/PostForm';
 
-const CategoryDetail = () => {
+const CategoryDetail = ({ categorySlug }) => {
   const [showPostForm, setShowPostForm] = useState(false);
-  const { slug } = useParams();
   const dispatch = useDispatch();
   const { currentCategory, status, error } = useSelector(
     (state) => state.categories
@@ -16,15 +14,15 @@ const CategoryDetail = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (slug) {
-      dispatch(fetchCategoryPosts(slug));
+    if (categorySlug) {
+      dispatch(fetchCategoryPosts(categorySlug));
     }
-  }, [dispatch, slug]);
+  }, [dispatch, categorySlug]);
 
   const handlePostSuccess = () => {
     setShowPostForm(false);
     // Refresh the category posts
-    dispatch(fetchCategoryPosts(slug));
+    dispatch(fetchCategoryPosts(categorySlug));
   };
 
   return (
