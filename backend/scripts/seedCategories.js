@@ -6,7 +6,9 @@ const oldSlugs = [
   'tech-talk',
   'help-support',
   'news-updates',
-  'introductions'
+  'introductions',
+  'data-management-labeling',  // Added to remove
+  'simulation-testing'         // Added to remove
 ];
 
 const categories = [
