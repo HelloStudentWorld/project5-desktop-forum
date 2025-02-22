@@ -17,7 +17,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      <h1>Welcome to Forum App</h1>
+      <h1>Welcome to Drive Vision Forum</h1>
       <p>A place to discuss interesting topics and share ideas.</p>
       
       <div className="cta-container">

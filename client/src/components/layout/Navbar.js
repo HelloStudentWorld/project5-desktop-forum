@@ -16,7 +16,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <Link to="/">Forum App</Link>
+        <Link to="/">Drive Vision Forum</Link>
       </div>
       <div className="navbar-menu">
         <Link to="/forum">Forum</Link>

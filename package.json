@@ -1,7 +1,7 @@
 {
   "name": "forum-app",
   "version": "1.0.0",
-  "description": "Forum Application with React frontend and Express backend",
+  "description": "Drive Vision Forum with React frontend and Express backend",
   "main": "backend/server.js",
   "scripts": {
     "start": "cd backend && npm start",
