@@ -18,7 +18,7 @@ const Home = () => {
   return (
     <div className="home-container">
       <h1>Welcome to Drive Vision Forum</h1>
-      <p>A place to discuss interesting topics and share ideas.</p>
+      <p>Your community hub for automotive enthusiasts to discuss vehicles, share experiences, and explore the future of driving.</p>
       
       <div className="cta-container">
         {isAuthenticated ? (
@@ -40,10 +40,10 @@ const Home = () => {
       <div className="features">
         <h2>Features</h2>
         <ul>
-          <li>Create and participate in discussions</li>
-          <li>Share your thoughts and ideas</li>
-          <li>Connect with other users</li>
-          <li>Personalize your profile</li>
+          <li>Engage in discussions about vehicles, technology, and driving experiences</li>
+          <li>Share automotive knowledge and get expert advice</li>
+          <li>Connect with fellow car enthusiasts and professionals</li>
+          <li>Stay updated on the latest automotive trends and innovations</li>
         </ul>
       </div>
     </div>

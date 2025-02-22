@@ -1,10 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 const PostCard = ({ post }) => {
-  const { user } = useSelector((state) => state.auth);
-  const isAuthor = user?.id === post.user_id;
 
   // Format date
   const formatDate = (dateString) => {
@@ -23,7 +20,7 @@ const PostCard = ({ post }) => {
     <div className="post-card">
       <div className="post-header">
         <h3>
-          <Link to={`/post/${post.id}`} className="post-title">
+          <Link to={`/posts/${post.id}`} className="post-title">
             {post.title}
           </Link>
         </h3>
@@ -46,7 +43,7 @@ const PostCard = ({ post }) => {
       </div>
 
       <div className="post-footer">
-        <Link to={`/post/${post.id}`} className="read-more">
+        <Link to={`/posts/${post.id}`} className="read-more">
           Read More
         </Link>
       </div>
