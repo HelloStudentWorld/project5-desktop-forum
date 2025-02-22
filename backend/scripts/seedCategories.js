@@ -3,29 +3,49 @@ const { sequelize, Category } = require('../models');
 
 const categories = [
   {
-    name: 'General Discussion',
-    description: 'A place for general topics and conversations',
-    slug: 'general-discussion'
+    name: 'Perception & Sensor Fusion',
+    description: 'For questions related to camera, LiDAR, radar integration, sensor calibration, object detection, and multi-sensor fusion on the NVIDIA platform.',
+    slug: 'perception-sensor-fusion'
   },
   {
-    name: 'Tech Talk',
-    description: 'Discuss the latest in technology, programming, and software development',
-    slug: 'tech-talk'
+    name: 'Localization & Mapping',
+    description: 'For questions about GPS integration, SLAM (Simultaneous Localization and Mapping), HD maps, and related localization approaches.',
+    slug: 'localization-mapping'
   },
   {
-    name: 'Help & Support',
-    description: 'Ask questions and get help from the community',
-    slug: 'help-support'
+    name: 'Path Planning & Control',
+    description: 'For questions around motion planning algorithms, trajectory generation, and low-level vehicle control (steering, braking, throttle).',
+    slug: 'path-planning-control'
   },
   {
-    name: 'News & Updates',
-    description: 'Stay up to date with the latest news and platform updates',
-    slug: 'news-updates'
+    name: 'Behavior Prediction & Decision Making',
+    description: 'For questions about predicting other vehicles/pedestrians, implementing decision-making logic (rule-based or AI-driven), and handling complex traffic scenarios.',
+    slug: 'behavior-prediction-decision-making'
   },
   {
-    name: 'Introductions',
-    description: 'New to the forum? Introduce yourself here!',
-    slug: 'introductions'
+    name: 'Safety & Validation',
+    description: 'For questions regarding system safety, validation strategies, test protocols, and standards compliance (e.g., ISO 26262).',
+    slug: 'safety-validation'
+  },
+  {
+    name: 'Hardware & Infrastructure',
+    description: 'For questions about hardware integration, computing modules (e.g., NVIDIA DRIVE AGX), wiring harnesses, power systems, and on-vehicle setups.',
+    slug: 'hardware-infrastructure'
+  },
+  {
+    name: 'Data Management & Labeling',
+    description: 'For questions on data collection, annotation pipelines, dataset organization, and training data curation for autonomous driving models.',
+    slug: 'data-management-labeling'
+  },
+  {
+    name: 'Simulation & Testing',
+    description: 'For questions about simulation tools, synthetic data generation, test scenarios, and bridging the gap between simulated and real-world performance.',
+    slug: 'simulation-testing'
+  },
+  {
+    name: 'General Q&A on NVIDIA Autonomous Tech',
+    description: 'Catch-all category for any AV or NVIDIA DRIVE-related question not covered above.',
+    slug: 'general-nvidia-av-qa'
   }
 ];
 
