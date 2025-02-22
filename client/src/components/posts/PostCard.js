@@ -49,13 +49,6 @@ const PostCard = ({ post }) => {
         <Link to={`/post/${post.id}`} className="read-more">
           Read More
         </Link>
-        {isAuthor && (
-          <div className="post-actions">
-            <Link to={`/post/${post.id}/edit`} className="edit-link">
-              Edit
-            </Link>
-          </div>
-        )}
       </div>
     </div>
   );
