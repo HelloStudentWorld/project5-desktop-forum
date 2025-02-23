@@ -7,7 +7,6 @@ import PrivateRoute from './components/layout/PrivateRoute';
 import Home from './components/pages/Home';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
-import PostList from './components/posts/PostList';
 import PostDetail from './components/posts/PostDetail';
 import Dashboard from './components/layout/Dashboard';
 import Profile from './components/profile/Profile';
@@ -40,7 +39,7 @@ function App() {
           }
         />
         <Route
-          path="/post/:id"
+          path="/posts/:id"
           element={
             <PrivateRoute isAuthenticated={isAuthenticated}>
               <div className="container"><PostDetail /></div>
