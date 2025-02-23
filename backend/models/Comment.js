@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       tableName: 'Comments',
+      freezeTableName: true,
       timestamps: true,
       createdAt: 'created_at',
       updatedAt: false,

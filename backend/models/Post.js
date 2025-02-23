@@ -13,6 +13,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       tableName: 'Posts',
+ // Keep capitalized to match database
+      freezeTableName: true, // Prevent Sequelize from pluralizing
       timestamps: true,
       createdAt: 'created_at',
       updatedAt: 'updated_at',
